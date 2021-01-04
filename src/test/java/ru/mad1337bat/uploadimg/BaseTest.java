@@ -1,12 +1,15 @@
 package ru.mad1337bat.uploadimg;
 
 import io.restassured.RestAssured;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 public abstract class BaseTest {
@@ -35,5 +38,15 @@ public abstract class BaseTest {
             e.printStackTrace();
         }
     }
-
+    private byte[] getFileContentInBase64() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File inputFile = new File(Objects.requireNonNull(classLoader.getResource("avatar.jpg")).getFile());
+        byte[] fileContent = new byte[0];
+        try {
+            fileContent = FileUtils.readFileToByteArray(inputFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fileContent;
+    }
 }

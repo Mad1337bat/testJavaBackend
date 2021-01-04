@@ -11,12 +11,11 @@ import java.util.Base64;
 import java.util.Objects;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 
-public class ImageTests
-        extends BaseTest{
+public class ImageTests extends BaseTest {
 
     String encodedImage;
     String uploadedImageHashCode;
@@ -26,7 +25,6 @@ public class ImageTests
         byte[] fileContent = getFileContentInBase64();
         encodedImage = Base64.getEncoder().encodeToString(fileContent);
     }
-
 
 
     @Test
@@ -64,7 +62,7 @@ public class ImageTests
         File inputFile = new File(Objects.requireNonNull(classLoader.getResource("avatar.jpg")).getFile());
         byte[] fileContent = new byte[0];
         try {
-            fileContent =   FileUtils.readFileToByteArray(inputFile);
+            fileContent = FileUtils.readFileToByteArray(inputFile);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -24,4 +24,5 @@ hs_err_pid*
 
 src/test/resources/app.properties
 target/test-classes/app.properties
+target/*
 
