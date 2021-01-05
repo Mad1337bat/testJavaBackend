@@ -101,7 +101,7 @@ public class ImageActionTests extends BaseTest {
 
     @Test
     void validateImgTypePngTest() {
-        String type = given()
+        String typePng = given()
                 .headers("Authorization", token)
                 .when()
                 .get("/image/{imageHash}", returnedId)
@@ -112,7 +112,7 @@ public class ImageActionTests extends BaseTest {
                 .response()
                 .jsonPath()
                 .getString("data.type");
-        assertThat(type, equalTo("image/png"));
+        assertThat(typePng, equalTo("image/png"));
         tearDown();
     }
 
@@ -205,7 +205,7 @@ public class ImageActionTests extends BaseTest {
 
 
     @Test
-    void makeImgAsFavorite() {
+    void makeImgAsFavoriteNonfavorite() {
         String isFavorite = given()
                 .headers("Authorization", token)
                 .when()
@@ -218,6 +218,20 @@ public class ImageActionTests extends BaseTest {
                 .jsonPath()
                 .getString("data");
         assertThat(isFavorite, equalTo("favorited"));
+
+        String isnotFavorite = given()
+                .headers("Authorization", token)
+                .when()
+                .post("/image/{imageHash}/favorite", returnedId)
+                .prettyPeek()
+                .then()
+                .statusCode(200)
+                .extract()
+                .response()
+                .jsonPath()
+                .getString("data");
+        assertThat(isnotFavorite, equalTo("unfavorited"));
+        tearDown();
     }
 
     @Test
@@ -225,15 +239,16 @@ public class ImageActionTests extends BaseTest {
         String isFavorite = given()
                 .headers("Authorization", token)
                 .when()
-                .post("/image/{imageHash}/favorite", returnedId)
+                .get("/image/{imageHash}", returnedId)
                 .prettyPeek()
                 .then()
-                .statusCode(not(200))
+                .statusCode(200)
                 .extract()
                 .response()
                 .jsonPath()
-                .getString("data");
-        assertThat(isFavorite, equalTo("favorited"));
+                .getString("data.favorite");
+        assertThat(isFavorite, equalTo("false"));
+        tearDown();
     }
 
 
@@ -251,7 +266,7 @@ public class ImageActionTests extends BaseTest {
 
     private byte[] getFileContentInBase64() {
         ClassLoader classLoader = getClass().getClassLoader();
-        File inputFile = new File(Objects.requireNonNull(classLoader.getResource("hdpicture.png")).getFile());
+        File inputFile = new File(Objects.requireNonNull(classLoader.getResource("picture7mb.jpg")).getFile());
         byte[] fileContent = new byte[0];
         try {
             fileContent = FileUtils.readFileToByteArray(inputFile);
